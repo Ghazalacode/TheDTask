@@ -30,6 +30,7 @@ import com.example.agh.thedtask.domain.engine.logd
 
 typealias  FragmentList = MutableLiveData<MutableList<Fragment>>
 class ActivityViewModel(  ) : ViewModel(){
+    // list of opened fragment used on rotation and back press
     val fragment: FragmentList = MutableLiveData()
 
 }
@@ -42,6 +43,7 @@ class ProductsActivity : AppCompatActivity() {
 
        viewModel =ViewModelProviders.of(this).get(ActivityViewModel::class.java)
 
+// using activity viewmodel to control screen rotation
         if (viewModel.fragment.value == null)  transact(ProductsListFragment())
         else transact(viewModel.fragment.value!!.last())
         RxJavaPlugins.setErrorHandler { throwable -> throwable.message?.logd()}
@@ -51,6 +53,7 @@ class ProductsActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         val fragmentList  = viewModel.fragment.value
+        // popping last fragment and inflating the one in turn
         fragmentList?.apply { remove(last()) }
         if (! fragmentList?.isEmpty()!!) transact(fragmentList.last()) else finish()
 
@@ -62,9 +65,11 @@ class ProductsActivity : AppCompatActivity() {
 }
 
 class ProductsListFragment : Fragment() {
+
     val activityViewModel by lazy { ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java) }
     private val viewModel by lazy { ViewModelProviders.of(this).get(ProductsViewModel::class.java) }
     private val disposables = CompositeDisposable()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_products_list, container, false)
 
@@ -101,7 +106,7 @@ class ProductsListFragment : Fragment() {
         results_recycler_view.layoutManager = LinearLayoutManager(activity)
         results_recycler_view.adapter = ProductsAdapter(this, viewModel.productsResult)
 
-
+                // adding current fragment to activity ViewModel
         activityViewModel.fragment.value.takeIf { it==null }.also {
             val list = mutableListOf<Fragment>()
             list.add(this)

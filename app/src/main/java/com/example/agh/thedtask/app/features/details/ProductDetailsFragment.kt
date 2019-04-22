@@ -28,17 +28,16 @@ class ProductDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         retainInstance =true
+
         val activity = activity as AppCompatActivity
         activity.supportActionBar?.title = "Product Details"
-
-
-
 
     arguments?.apply {
                   //  productSerializable = getSerializable(EXTRA_PRODUCT)
                     val product = getSerializable(EXTRA_PRODUCT) as Product
                 with(view){
+
+                    //getting choosed product from list and displaying it
                     tv_price.text  = "$${product.price}"
                     tv_title.text  = product.name
                     tv_product_descreption.text  = product.productDescription
@@ -52,20 +51,12 @@ class ProductDetailsFragment : Fragment() {
                 }
                 }
 
+        // adding current fragment to activity ViewModel if not already added
         with(activityViewModel.fragment.value!!){
             if ( ! this.contains(this@ProductDetailsFragment) )add(this@ProductDetailsFragment)
         }
 
 
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
 
