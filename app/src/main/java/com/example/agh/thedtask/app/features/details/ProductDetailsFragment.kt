@@ -17,7 +17,7 @@ import java.io.Serializable
 
 class ProductDetailsFragment : Fragment() {
 
-    lateinit var productSerializable: Serializable
+    //lateinit var productSerializable: Serializable
  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_product_details, container, false)
 
@@ -30,7 +30,7 @@ class ProductDetailsFragment : Fragment() {
         activity.supportActionBar?.title = "Product Details"
 
     arguments?.apply {
-                    productSerializable = getSerializable(EXTRA_PRODUCT)
+                  //  productSerializable = getSerializable(EXTRA_PRODUCT)
                     val product = getSerializable(EXTRA_PRODUCT) as Product
                 with(view){
                     tv_price.text  = "$${product.price}"
@@ -52,7 +52,7 @@ class ProductDetailsFragment : Fragment() {
 
 
     override fun onSaveInstanceState(outState: Bundle) {
-      outState.putSerializable(EXTRA_PRODUCT , productSerializable)
+    //  outState.putSerializable(EXTRA_PRODUCT , productSerializable)
         super.onSaveInstanceState(outState)
 
     }
