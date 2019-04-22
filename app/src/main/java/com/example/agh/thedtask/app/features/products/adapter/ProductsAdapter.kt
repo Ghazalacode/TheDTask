@@ -46,9 +46,8 @@ class ProductViewHolder(private val view: View) : RecyclerView.ViewHolder(view) 
                 .apply(  RequestOptions().
                         diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                         .override(product.image.width.toInt() , product.image.height.toInt()))
-
-
                 .into(ivProductImage)
+
         view.setOnClickListener {
             Intent(ACTION_SHOW_PRODUCT_BUTTON_CLICKED)
                     .putExtra(EXTRA_PRODUCT, product as Serializable)

@@ -1,5 +1,7 @@
 package com.example.agh.thedtask.app.features.details
 
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
@@ -10,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.example.agh.thedtask.R
+import com.example.agh.thedtask.app.features.products.ActivityViewModel
 import com.example.agh.thedtask.entities.Product
 import com.example.agh.wheatherapp.features.home.adapter.EXTRA_PRODUCT
 import kotlinx.android.synthetic.main.fragment_product_details.view.*
@@ -17,7 +20,7 @@ import java.io.Serializable
 
 class ProductDetailsFragment : Fragment() {
 
-    //lateinit var productSerializable: Serializable
+   val activityViewModel by lazy { ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java) }
  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_product_details, container, false)
 
@@ -25,9 +28,12 @@ class ProductDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
- retainInstance =true
+         retainInstance =true
         val activity = activity as AppCompatActivity
         activity.supportActionBar?.title = "Product Details"
+
+
+
 
     arguments?.apply {
                   //  productSerializable = getSerializable(EXTRA_PRODUCT)
@@ -46,14 +52,21 @@ class ProductDetailsFragment : Fragment() {
                 }
                 }
 
+        with(activityViewModel.fragment.value!!){
+            if ( ! this.contains(this@ProductDetailsFragment) )add(this@ProductDetailsFragment)
+        }
+
 
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
-    //  outState.putSerializable(EXTRA_PRODUCT , productSerializable)
         super.onSaveInstanceState(outState)
-
     }
+
+
 }

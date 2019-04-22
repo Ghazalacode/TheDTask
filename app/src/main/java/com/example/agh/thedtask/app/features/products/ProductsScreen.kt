@@ -1,5 +1,6 @@
 package com.example.agh.thedtask.app.features.products
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
@@ -24,23 +25,44 @@ import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_products_list.*
 import java.io.Serializable
 import io.reactivex.plugins.RxJavaPlugins
+import android.arch.lifecycle.ViewModel
+import com.example.agh.thedtask.domain.engine.logd
 
+typealias  FragmentList = MutableLiveData<MutableList<Fragment>>
+class ActivityViewModel(  ) : ViewModel(){
+    val fragment: FragmentList = MutableLiveData()
 
+}
 
 class ProductsActivity : AppCompatActivity() {
-
+  lateinit var viewModel: ActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_products)
 
-       supportFragmentManager.beginTransaction().replace(R.id.container, ProductsListFragment()).commit()
+       viewModel =ViewModelProviders.of(this).get(ActivityViewModel::class.java)
 
-        RxJavaPlugins.setErrorHandler { throwable -> }
+        if (viewModel.fragment.value == null)  transact(ProductsListFragment())
+        else transact(viewModel.fragment.value!!.last())
+        RxJavaPlugins.setErrorHandler { throwable -> throwable.message?.logd()}
     }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val fragmentList  = viewModel.fragment.value
+        fragmentList?.apply { remove(last()) }
+        if (! fragmentList?.isEmpty()!!) transact(fragmentList.last()) else finish()
+
+    }
+
+    fun transact(fragment: Fragment){ supportFragmentManager.beginTransaction().
+            replace(R.id.container, fragment).commit()}
 
 }
 
 class ProductsListFragment : Fragment() {
+    val activityViewModel by lazy { ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java) }
     private val viewModel by lazy { ViewModelProviders.of(this).get(ProductsViewModel::class.java) }
     private val disposables = CompositeDisposable()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,11 +100,22 @@ class ProductsListFragment : Fragment() {
 
         results_recycler_view.layoutManager = LinearLayoutManager(activity)
         results_recycler_view.adapter = ProductsAdapter(this, viewModel.productsResult)
+
+
+        activityViewModel.fragment.value.takeIf { it==null }.also {
+            val list = mutableListOf<Fragment>()
+            list.add(this)
+            activityViewModel.fragment.postValue(list)
+        }
+
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context?.registerReceiver(showButtonReceiver, IntentFilter(ACTION_SHOW_PRODUCT_BUTTON_CLICKED))
+
+
 
     }
 
@@ -100,7 +133,8 @@ class ProductsListFragment : Fragment() {
     private fun startDetailFragment(productSerializable: Serializable) {
 
         val productDetailsFragment = returnDetailFragment(productSerializable)
-        fragmentManager!!.beginTransaction().add(R.id.container, productDetailsFragment).addToBackStack("ListFragment").commit()
+        fragmentManager!!.beginTransaction().add(R.id.container, productDetailsFragment)
+                .addToBackStack("DetailFragment").commit()
 
     }
 
