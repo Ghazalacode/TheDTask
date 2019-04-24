@@ -1,18 +1,13 @@
 package com.example.agh.thedtask.domain.usecases
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule
-import android.hardware.Camera
-import com.example.agh.thedtask.app.features.products.ProductsViewModel
 import com.example.agh.thedtask.domain.engine.toMutableLiveData
 import com.example.agh.thedtask.domain.repositories.ProductsRepository
 import com.example.agh.thedtask.entities.Image
 import com.example.agh.thedtask.entities.Product
-import com.example.usecases.database.AppDatabase
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Maybe
 import io.reactivex.Single
 import org.junit.Assert
-import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
 
