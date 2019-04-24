@@ -80,8 +80,6 @@ class UseCasesTest{
         //Assert
         val newValue =    productsResult.value
 
-        //  verify(useCase,times(0)).retrieveFromDatabase()
-
         Assert.assertEquals(true ,productsResult.value?.size==1 )
     }
     @Test
