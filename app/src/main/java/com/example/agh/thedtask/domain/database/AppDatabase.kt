@@ -21,6 +21,5 @@ val appDatabase by lazy {
 , version = 1  , exportSchema = false)
 @TypeConverters(  ImageTypeConverter::class)
 abstract class AppDatabase : RoomDatabase(){
-
     abstract val productsDao: ProductsDao
 }

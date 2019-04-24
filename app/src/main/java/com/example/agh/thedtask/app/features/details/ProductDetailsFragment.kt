@@ -20,8 +20,8 @@ import java.io.Serializable
 
 class ProductDetailsFragment : Fragment() {
 
-   val activityViewModel by lazy { ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java) }
- override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    val activityViewModel by lazy { ViewModelProviders.of(activity!!).get(ActivityViewModel::class.java) }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_product_details, container, false)
 
     }
@@ -32,32 +32,30 @@ class ProductDetailsFragment : Fragment() {
         val activity = activity as AppCompatActivity
         activity.supportActionBar?.title = "Product Details"
 
-    arguments?.apply {
-                  //  productSerializable = getSerializable(EXTRA_PRODUCT)
-                    val product = getSerializable(EXTRA_PRODUCT) as Product
-                with(view){
+        arguments?.apply {
 
-                    //getting choosed product from list and displaying it
-                    tv_price.text  = "$${product.price}"
-                    tv_title.text  = product.name
-                    tv_product_descreption.text  = product.productDescription
-                    Glide.with(view.context)
-                            .load(product.image.link)
-                            .apply(  RequestOptions().
-                                    diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
-                                    .override(product.image.width.toInt() , product.image.height.toInt()))
+            val product = getSerializable(EXTRA_PRODUCT) as Product
+            with(view) {
 
-                            .into(iv_product_image)
-                }
-                }
+                //getting choosed product from list and displaying it
+                tv_price.text = "$${product.price}"
+                tv_title.text = product.name
+                tv_product_descreption.text = product.productDescription
+                Glide.with(view.context)
+                        .load(product.image.link)
+                        .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                                .override(product.image.width.toInt(), product.image.height.toInt()))
+
+                        .into(iv_product_image)
+            }
+        }
 
         // adding current fragment to activity ViewModel if not already added
-        with(activityViewModel.fragment.value!!){
-            if ( ! this.contains(this@ProductDetailsFragment) )add(this@ProductDetailsFragment)
+        with(activityViewModel.fragment.value!!) {
+            if (!this.contains(this@ProductDetailsFragment)) add(this@ProductDetailsFragment)
         }
 
 
     }
-
 
 }

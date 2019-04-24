@@ -118,40 +118,6 @@ class UseCasesTest{
         Assert.assertEquals(oldValue ,newValue )
     }
 
-/*    @Test
-    fun  `  When already retrieving don't update resultLiveData value` () {
-        //Arrange ( initialize needed paramaters  )
-        val productsResult = listOf<Product>().toMutableLiveData()
-        val oldValue = productsResult.value
-        val retrieving = true.toMutableLiveData()
-
-
-        // Act (  Action  )
-        RetrieveProductsUseCase(repository,retrieving,productsResult).invoke(false ,false)
-
-        //Assert
-        val newValue =    productsResult.value
-
-        Assert.assertEquals(oldValue ,newValue )
-    }
-
-
-    @Test
-    fun  `  When triggering clearProductsTable()  Products Table is emptied ` () {
-        //Arrange ( initialize needed paramaters  )
-        val tableContent = repository.retrieveProductsListFromDatabase()
-
-       // Act (  Action  )
-       clearProductsTable()
-
-        //Assert
-        val newTableContent =    repository.retrieveProductsListFromDatabase()
-
-        Assert.assertEquals(oldValue ,newValue )
-    }
-    */
-
-
 
 
 }

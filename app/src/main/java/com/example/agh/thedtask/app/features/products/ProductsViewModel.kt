@@ -17,7 +17,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import java.io.Serializable
+
 
 class ProductsViewModel(
 
@@ -34,11 +34,16 @@ class ProductsViewModel(
 
     fun retrieveProducts(context: Context) {
         val networkState = hasNetwork(context)?:false
+
       if ( ! networkState)  toastText.onNext("Please Check Your Internet Connection")
         Observable.fromCallable { retrieveProductsUseCase(networkState) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({"retrieved successfully"} , { it.message?.logd()  })
+                .subscribe({"retrieved successfully"} , {
+                  it.message?.apply { logd()
+                      if (this.contains("Timeout")) toastText.onNext("Couldn't Retrieve New Data")
+                  }
+                    retrieveProgress.postValue(false)})
                 .also { disposables.add(it) }
     }
 
@@ -46,7 +51,8 @@ class ProductsViewModel(
        Observable.fromCallable { clearProductsTable() }
                .subscribeOn(Schedulers.io())
                .observeOn(AndroidSchedulers.mainThread())
-               .subscribe({"cleared successfully".logd()} , { it.message?.logd()  })
+               .subscribe({"cleared successfully".logd()} , { it.message?.logd()
+                   retrieveProgress.postValue(false)})
                .also { disposables.add(it) }
     }
 
